@@ -2,10 +2,11 @@ import { useState } from "react";
 import type { BankCredit, Extracted, Ledger } from "./api";
 import type { Collected } from "./Collect";
 import { SKIP_REASON, type Strings } from "./i18n";
+import type { Content } from "./content";
 import { CreditRow, NoticeCard, StatementCard, type Notice, type Statement } from "./cards";
 
 /** Editable view of everything that was read. Only what the worker confirms reaches the checks. */
-export function Confirm({ t, collected, onConfirm, onBack }: { t: Strings; collected: Collected; onConfirm: (l: Ledger) => void; onBack: () => void }) {
+export function Confirm({ t, c, collected, onConfirm, onBack }: { t: Strings; c: Content; collected: Collected; onConfirm: (l: Ledger) => void; onBack: () => void }) {
   const [statements, setStatements] = useState<Statement[]>(() => collected.extracted.flatMap((e) => (e.status === "ok" && e.type === "statement" ? [e.data] : [])));
   const [notices, setNotices] = useState<Notice[]>(() => collected.extracted.flatMap((e) => (e.status === "ok" && e.type === "block_notice" ? [e.data] : [])));
   const [credits, setCredits] = useState<BankCredit[]>(collected.sms.credits);
@@ -32,8 +33,10 @@ export function Confirm({ t, collected, onConfirm, onBack }: { t: Strings; colle
 
   return (
     <section>
-      <h2>{t.confirmTitle}</h2>
-      <p className="note">{t.confirmHint}</p>
+      <div className="page-head">
+        <h2>{t.confirmTitle}</h2>
+        <p>{t.confirmHint}</p>
+      </div>
 
       {statements.map((s, i) => (
         <StatementCard key={`s${i}`} t={t} s={s} thumb={collected.thumbs[s.sourceImage]} onChange={(v) => setStatements((a) => at(a, i, v))} />
@@ -81,12 +84,14 @@ export function Confirm({ t, collected, onConfirm, onBack }: { t: Strings; colle
       )}
 
       {error && <p className="error">{error}</p>}
-      <button className="primary" onClick={confirm} disabled={statements.length === 0 && notices.length === 0}>
-        {t.confirmBtn}
-      </button>
-      <button className="secondary" onClick={onBack}>
-        ←
-      </button>
+      <div className="btn-row">
+        <button className="secondary back" onClick={onBack}>
+          ← {c.back}
+        </button>
+        <button className="primary" onClick={confirm} disabled={statements.length === 0 && notices.length === 0}>
+          {t.confirmBtn}
+        </button>
+      </div>
     </section>
   );
 }
