@@ -14,6 +14,7 @@
     "typecheck": "tsc -p . && tsc -p web",
     "demo": "tsx server/demo.ts",
     "smoke": "tsx scripts/smoke.ts",
+    "extract-demo": "tsx scripts/extract-demo.ts",
     "screens": "tsx scripts/screens.ts",
     "build": "vite build --config web/vite.config.ts",
     "start": "tsx server/index.ts",

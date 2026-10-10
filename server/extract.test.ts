@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { extractImage } from "./extract.js";
+import { z } from "zod";
+import { extractImage, ToolInput } from "./extract.js";
 import { mergeLedger } from "./ledger.js";
 import { loadDemo } from "./demo-data.js";
 import { CHECKS } from "./audit/checks.js";
@@ -54,6 +55,18 @@ describe("extractImage", () => {
   it("returns unreadable (never throws) after two invalid outputs", async () => {
     const r = await extractImage("s1", PNG, "image/png", vision([{ type: "bogus" }]));
     expect(r.status).toBe("unreadable");
+  });
+
+  it("gives the model a plain object schema (Gemini ignores a root oneOf and sends {})", () => {
+    const schema = z.toJSONSchema(ToolInput) as { type?: string; properties?: Record<string, unknown>; oneOf?: unknown };
+    expect(schema.type).toBe("object");
+    expect(Object.keys(schema.properties ?? {})).toEqual(["type", "statement", "notice", "note"]);
+    expect(schema.oneOf).toBeUndefined();
+  });
+
+  it("asks the model to retry when the chosen type's object is missing", async () => {
+    const r = await extractImage("bn", PNG, "image/png", vision([{ type: "block_notice" }, { type: "block_notice", notice: { noticeDate: "2026-10-03", effectiveDate: "2026-10-03", reasonText: "" } }]));
+    expect(r.status === "ok" && r.type === "block_notice" && r.data.sourceImage).toBe("bn");
   });
 
   it("rejects unsupported types and oversize images without calling the model", async () => {
