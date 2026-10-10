@@ -1,0 +1,17 @@
+{
+  "name": "nyaya-ledger-deck",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds docs/Nyaya-Ledger.pptx. Kept separate from the app's package.json.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "export": "powershell -NoProfile -ExecutionPolicy Bypass -File export.ps1",
+    "preview": "powershell -NoProfile -ExecutionPolicy Bypass -File export.ps1 -Png"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "pptxgenjs": "^4.0.1",
+    "qrcode": "^1.5.4"
+  }
+}
