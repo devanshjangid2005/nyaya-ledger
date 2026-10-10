@@ -13,7 +13,11 @@
     "test:watch": "vitest",
     "typecheck": "tsc -p . && tsc -p web",
     "demo": "tsx server/demo.ts",
-    "smoke": "tsx scripts/smoke.ts"
+    "smoke": "tsx scripts/smoke.ts",
+    "screens": "tsx scripts/screens.ts",
+    "build": "vite build --config web/vite.config.ts",
+    "start": "tsx server/index.ts",
+    "e2e": "tsx scripts/e2e.ts"
   },
   "license": "MIT",
   "dependencies": {
@@ -23,6 +27,7 @@
     "multer": "^2.4.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -33,7 +38,6 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "concurrently": "^10.0.6",
-    "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "vite": "^8.3.4",
     "vitest": "^5.0.3"

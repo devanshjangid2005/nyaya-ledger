@@ -1,0 +1,25 @@
+# Render Blueprint: one free web service serves the API and the built web app.
+# Dashboard → New → Blueprint → pick this repo. Then fill in the secret env vars.
+services:
+  - type: web
+    name: nyaya-ledger
+    runtime: node
+    plan: free
+    # --include=dev: vite + @vitejs/plugin-react are needed to build web/dist.
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: MODEL_PROVIDER
+        sync: false
+      - key: MODEL_ID
+        sync: false
+      - key: VISION_MODEL_ID
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: RATE_LIMIT_PER_10MIN
+        value: "20"

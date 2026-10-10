@@ -1,0 +1,91 @@
+:root {
+  --ink: #1b1f24;
+  --muted: #5b6470;
+  --line: #d9dee4;
+  --bg: #f6f7f9;
+  --brand: #0b5cad;
+  --issue: #b42318;
+  --issue-bg: #fef3f2;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --info-bg: #f2f4f7;
+  font-family: "Noto Sans", "Noto Sans Kannada", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.45;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 480px; margin: 0 auto; padding: 12px 14px 40px; }
+h1 { font-size: 1.4rem; margin: 0; color: var(--brand); }
+h2 { font-size: 1.15rem; margin: 16px 0 6px; }
+h3 { font-size: 1rem; margin: 0 0 6px; }
+.brand p { margin: 2px 0 8px; color: var(--muted); }
+.progress { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0 0 8px; }
+.progress li { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--line); font-size: 0.8rem; }
+.progress li.on { background: var(--brand); color: #fff; }
+
+.field { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; font-weight: 600; }
+.field small { font-weight: 400; color: var(--muted); }
+input, select, textarea { font: inherit; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; width: 100%; min-width: 0; }
+textarea { resize: vertical; }
+.row { display: flex; gap: 8px; }
+.row > * { flex: 1; }
+.inline { display: flex; align-items: center; gap: 8px; margin-top: 6px; white-space: nowrap; }
+
+button, .button { font: inherit; display: block; width: 100%; padding: 13px; border-radius: 10px; border: 0; margin-top: 10px; text-align: center; text-decoration: none; cursor: pointer; }
+button:disabled { opacity: 0.55; }
+.primary { background: var(--brand); color: #fff; font-weight: 700; }
+.secondary { background: #fff; color: var(--brand); border: 1px solid var(--brand); }
+.link { background: none; color: var(--brand); padding: 6px 0; width: auto; margin: 0; display: inline; }
+
+.note { color: var(--muted); font-size: 0.9rem; }
+.error { color: var(--issue); background: var(--issue-bg); padding: 10px; border-radius: 8px; }
+.warn { color: #93370d; }
+.muted { color: var(--muted); font-size: 0.85rem; word-break: break-word; }
+
+.card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 10px 0; }
+.card.warn { border-color: #f79009; }
+.card-head { display: flex; gap: 10px; align-items: flex-start; }
+.card-head > div { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.card-title { display: flex; justify-content: space-between; align-items: baseline; }
+.thumb { width: 72px; border-radius: 6px; border: 1px solid var(--line); flex: none; }
+.lines { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.lines td { padding: 3px 2px; }
+.lines td:first-child { width: 29%; }
+.lines select { padding-right: 2px; }
+.lines tr.deduction input { color: var(--issue); }
+.amt { text-align: right; max-width: 90px; }
+.credit { display: grid; grid-template-columns: auto 1fr 90px; gap: 6px; align-items: center; margin-top: 8px; }
+.credit small { grid-column: 2 / 4; color: var(--muted); margin-top: -4px; }
+details { margin-top: 8px; font-size: 0.9rem; }
+
+.steps { padding-left: 20px; }
+.steps li { margin: 6px 0; }
+.spinner { list-style: none; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
+.ask { border-color: var(--brand); }
+
+.disclaimer { background: #fffaeb; border: 1px solid #fedf89; padding: 10px; border-radius: 8px; font-size: 0.88rem; }
+.finding { border-radius: 12px; padding: 10px 12px; margin: 8px 0; border-left: 5px solid var(--line); background: var(--info-bg); }
+.finding.possible_issue { border-left-color: var(--issue); background: var(--issue-bg); }
+.finding.ok { border-left-color: var(--ok); background: var(--ok-bg); }
+.finding-head { display: flex; justify-content: space-between; }
+.badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.possible_issue .badge { color: var(--issue); }
+.ok .badge { color: var(--ok); }
+.arith { font-family: ui-monospace, Consolas, monospace; font-size: 0.82rem; margin: 6px 0 2px; word-break: break-word; }
+.evidence { font-size: 0.8rem; color: var(--muted); margin: 2px 0; word-break: break-word; }
+.letter { white-space: pre-wrap; font: inherit; margin: 0; }
+blockquote { margin: 8px 0; padding-left: 10px; border-left: 3px solid var(--line); font-size: 0.88rem; }
+.actions { margin-top: 12px; }
+footer { margin-top: 24px; text-align: center; color: var(--muted); }
+
+.print-only { display: none; }
+@media print {
+  :root { background: #fff; }
+  main { max-width: none; padding: 0; }
+  .no-print { display: none !important; }
+  .print-only { display: block; }
+  .card, .finding { break-inside: avoid; }
+}

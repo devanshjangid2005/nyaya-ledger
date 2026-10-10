@@ -77,8 +77,10 @@ flowchart TD
     A -->|lookup_clause| L[Legal corpus - Act text with clause IDs]
     A -->|ask_worker| W
     A -->|submit_docket - completes run| G[Citation guard - code]
-    G --> P[HTML template -> Puppeteer PDF, Noto Kannada/Devanagari]
+    G --> P[Printable docket page - browser Save as PDF, Noto Kannada/Devanagari]
     P --> D[Grievance docket + draft letter + s.13 request]
+    S -.->|no model or 120 s timeout| F[Fallback docket - template, same checks + guard]
+    F --> P
     D --> W
 ```
 
@@ -92,7 +94,8 @@ flowchart TD
 | Audit library (`server/audit/`) | C1-C5 and C7 (C6 if built) as pure functions with vitest tests, plus de-duplication of overlapping screenshots |
 | Legal corpus (`legal/karnataka-2025.json`) | Clause ID → exact English text of s.12-15, 20-22 |
 | Citation guard | Code check: every clause ID in the docket must exist in the corpus, and its quoted text is inserted from the corpus, not from the model. Fails closed |
-| PDF | HTML rendered by headless Chromium (Puppeteer) so Kannada and Devanagari shape correctly |
+| Docket / PDF | The Result page is the docket. Print styles + Google Noto Sans Kannada/Devanagari; the worker taps "Save as PDF" and the phone's browser shapes the scripts correctly. No server-side Chromium, so it fits a 512 MB free host |
+| Fallback (`fallback.ts`) | If no model is configured, the model fails, or the run passes 120 s, the same checks and citation guard produce an English template docket, labelled "generated without AI" |
 
 ### Why the agent is restricted
 
@@ -110,7 +113,7 @@ Screenshot and SMS text is **untrusted input**. A crafted screenshot or message 
 
 ## Demo scenario
 
-Ravi, a two-wheeler food-delivery partner in Bengaluru, uploads 4 synthetic screenshots (two overlapping weekly statements, one penalty screen, one ID-block notice) and pastes 5 SMS from his bank inbox (3 platform credits, 1 OTP, 1 fuel debit). He adds 52 logged-in hours and ₹1,450 fuel cost. Nyaya-Ledger finds:
+Ravi, a two-wheeler food-delivery partner in Bengaluru, uploads 3 synthetic screenshots (two overlapping weekly statements, one ID-block notice) and pastes 5 SMS from his bank inbox (3 platform credits, 1 OTP, 1 fuel debit). He adds 52 logged-in hours and ₹1,450 fuel cost. Nyaya-Ledger finds:
 
 - **2 deductions with only a vague label** ("Adjustment" ₹180, "Other" ₹95), totalling ₹275 (C1). A third deduction, a ₹150 late-delivery penalty with an order ID, passes.
 - A **₹120 gap**: earnings ₹6,650 − deductions ₹425 = ₹6,225, but the net payout shown is ₹6,105 (C2)
@@ -119,7 +122,9 @@ Ravi, a two-wheeler food-delivery partner in Bengaluru, uploads 4 synthetic scre
 - Payouts on 22 Sep, 29 Sep and 6 Oct, which is weekly as required (C4 OK). The OTP and fuel-debit SMS are skipped automatically
 - **₹90/hour** after fuel (₹6,105 − ₹1,450 over 52 h), against ₹128/hour gross (C5)
 
-It then produces a Kannada grievance letter and a PDF docket for IPGRS, plus a s.13 request asking how the "Adjustment" deduction was calculated.
+It then produces a Kannada grievance letter and a printable docket for IPGRS, plus a s.13 request asking how the "Adjustment" deduction was calculated.
+
+Try it: open the live app and tap **"Try with demo data"** (ಡೆಮೊ ಡೇಟಾ ಬಳಸಿ).
 
 <!-- Keep these numbers in sync with demo/data/*.json -->
 
@@ -130,8 +135,9 @@ It then produces a Kannada grievance letter and a PDF docket for IPGRS, plus a s
 - **Vision extraction:** a hosted vision-capable model (provider configured by env var), output validated with zod
 - **Frontend:** React + Vite, mobile-first
 - **Server:** Express + multer (in-memory uploads)
-- **PDF:** HTML template → Puppeteer, with Noto Sans Kannada / Devanagari via `@fontsource`
-- **Tests:** vitest for the audit library and citation guard
+- **PDF:** print stylesheet + browser "Save as PDF", Noto Sans Kannada / Devanagari (Google Fonts)
+- **Tests:** vitest (38 tests: checks, SMS parser, citation guard, agent loop with a stub model, extraction, API) + a headless-Chrome end-to-end script
+- **Hosting:** Render free web service; one Node process serves the API and the built web app
 
 ## Setup
 
@@ -142,13 +148,19 @@ git clone https://github.com/devanshjangid2005/nyaya-ledger.git
 cd nyaya-ledger
 cp .env.example .env      # set MODEL_PROVIDER, MODEL_ID, VISION_MODEL_ID, API_KEY
 npm install
-npm test                  # 22 tests: checks, SMS parser, citation guard, agent loop (stub model)
+npm test                  # 38 tests; no API key needed (stub model)
 npm run smoke             # one real call to your model through the Cline SDK
 npm run dev               # API on :8787, web on :5173
 npm run demo              # runs the pipeline on demo/data without the UI
+npm run build && npm start   # production: one server on :8787 serves API + web
+npm run e2e -- http://localhost:8787   # full flow in headless Chrome, saves screenshots + PDF to demo/e2e/
 ```
 
-`MODEL_PROVIDER` is any Cline SDK built-in provider id (for example `anthropic`, `gemini`, `openrouter`, `openai-native`, `cline`).
+`MODEL_PROVIDER` is any Cline SDK built-in provider id (for example `anthropic`, `gemini`, `openrouter`, `openai-native`, `cline`). Without an API key the app still works: you type the screenshot values yourself and the docket comes from the template fallback.
+
+### Deploy (Render, free)
+
+`render.yaml` is a Render Blueprint. On render.com: **New → Blueprint →** pick this repo, then fill in `MODEL_PROVIDER`, `MODEL_ID`, `VISION_MODEL_ID` and `API_KEY`. Build: `npm ci --include=dev && npm run build`; start: `npm start`; health check `/api/health`. The free instance sleeps after 15 minutes idle, so the first request takes about a minute. `RATE_LIMIT_PER_10MIN` (default 20) limits AI calls per IP.
 
 ### Project layout
 
@@ -158,15 +170,23 @@ server/sms.ts               bank SMS parser (no AI)
 server/audit/checks.ts      deterministic checks C1-C5, C7
 server/audit/citations.ts   citation guard
 server/agent.ts             Cline SDK agent (5 custom tools)
-server/index.ts             Express API
+server/model.ts             provider/model from env
+server/extract.ts           screenshot → zod-validated JSON (vision model, 1 retry)
+server/ledger.ts            merge screenshots + SMS credits + inputs
+server/audit-service.ts     agent with timeout → template fallback (fallback.ts)
+server/sessions.ts          ask_worker bridge, per-IP rate limit
+server/app.ts               Express routes (SSE audit stream), serves web/dist
 legal/karnataka-2025.json   verbatim Act clauses
 demo/data/                  synthetic demo ledger + SMS
-web/                        React + Vite mobile UI
+web/                        React + Vite mobile UI (Collect → Confirm → Audit → Result)
+web/public/demo/            synthetic screenshots (npm run screens)
+scripts/                    smoke test, screenshot renderer, e2e
+render.yaml                 Render deploy blueprint
 ```
 
 ## How Cline was used
 
-**In the build:** Cline scaffolded the project, wrote the audit library test-first (failing vitest tests before each check's implementation), built the zod extraction schema, the bundled legal corpus loader and citation guard, the React confirmation screen and the Puppeteer PDF template. <!-- Add 3-4 screenshots of real Cline prompts and diffs from the build -->
+**In the build:** Cline scaffolded the project, wrote the audit library test-first (failing vitest tests before each check's implementation), built the zod extraction schema, the bundled legal corpus loader and citation guard, the React confirmation screen, the printable docket page and the headless-Chrome end-to-end test. <!-- Add 3-4 screenshots of real Cline prompts and diffs from the build -->
 
 **Inside the product:** the Cline SDK `Agent` runs the audit. It reads the confirmed ledger, decides which checks apply (for example, C3 only when a block notice is present), asks the worker for missing inputs through an `ask_worker` tool, looks up clause text, writes the worker-facing explanation and grievance letter in Kannada, Hindi or English, and ends the run by calling `submit_docket`, whose citations are then checked in code.
 
