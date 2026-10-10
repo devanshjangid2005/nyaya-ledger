@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { BankCredit, Extracted, Ledger } from "./api";
 import type { Collected } from "./Collect";
-import type { Strings } from "./i18n";
+import { SKIP_REASON, type Strings } from "./i18n";
 import { CreditRow, NoticeCard, StatementCard, type Notice, type Statement } from "./cards";
 
 /** Editable view of everything that was read. Only what the worker confirms reaches the checks. */
@@ -20,7 +20,7 @@ export function Confirm({ t, collected, onConfirm, onBack }: { t: Strings; colle
     const bad = [...statements.flatMap((s) => [s.periodStart, s.periodEnd]), ...notices.flatMap((n) => [n.noticeDate, n.effectiveDate]), ...credits.map((c) => c.date)].some(
       (d) => !/^\d{4}-\d{2}-\d{2}$/.test(d),
     );
-    if (bad) return setError("Dates must look like 2026-10-06.");
+    if (bad) return setError(t.dateError);
     onConfirm({
       statements: statements.map((s) => ({ ...s, lines: s.lines.filter((l) => l.label.trim() !== "" || l.amount > 0) })),
       blockNotices: notices,
@@ -68,7 +68,7 @@ export function Confirm({ t, collected, onConfirm, onBack }: { t: Strings; colle
           {collected.sms.skipped.length > 0 && (
             <details>
               <summary>
-                {t.skipped}: {collected.sms.skipped.map((s) => s.reason).join(", ")}
+                {t.skipped}: {collected.sms.skipped.map((s) => SKIP_REASON[collected.inputs.language][s.reason] ?? s.reason).join(", ")}
               </summary>
               {collected.sms.skipped.map((s, i) => (
                 <p className="muted" key={i}>

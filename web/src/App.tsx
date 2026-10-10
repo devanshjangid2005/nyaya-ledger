@@ -80,7 +80,7 @@ export function App() {
       {step.name === "result" && <Result t={t} draft={step.draft} ledger={step.ledger} smsText={smsById(step.collected)} onRestart={() => setStep({ name: "collect" })} />}
 
       <footer className="no-print">
-        <small>Not legal advice · Synthetic demo data available · Built with Cline</small>
+        <small>{t.footer}</small>
       </footer>
     </main>
   );

@@ -19,7 +19,7 @@ export function Audit({ t, ledger, onDone, onError }: { t: Strings; ledger: Ledg
       ledger,
       {
         onSession: (id) => (session.current = id),
-        onStep: (tool) => setSteps((s) => [...s, STEP_LABEL[tool] ?? tool]),
+        onStep: (tool) => setSteps((s) => [...s, STEP_LABEL[ledger.inputs.language][tool] ?? tool]),
         onQuestion: (q) => setQuestion(q),
         onFallback: (r) => setFallback(r),
       },
@@ -35,7 +35,7 @@ export function Audit({ t, ledger, onDone, onError }: { t: Strings; ledger: Ledg
     const a = answer.trim() || "I don't know";
     setQuestion(null);
     setAnswer("");
-    setSteps((s) => [...s, `You: ${a}`]);
+    setSteps((s) => [...s, `${t.you}: ${a}`]);
     await api.answer(session.current, a).catch(() => undefined);
   }
 

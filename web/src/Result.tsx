@@ -53,8 +53,16 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
           </div>
           <strong>{f.title}</strong>
           <p className="arith">{f.arithmetic}</p>
-          {f.evidence.length > 0 && <p className="evidence">Evidence: {f.evidence.join(", ")}</p>}
-          {f.clauseIds.length > 0 && <p className="evidence">Act: {f.clauseIds.join(", ")}</p>}
+          {f.evidence.length > 0 && (
+            <p className="evidence">
+              {t.evidence}: {f.evidence.join(", ")}
+            </p>
+          )}
+          {f.clauseIds.length > 0 && (
+            <p className="evidence">
+              {t.act}: {f.clauseIds.join(", ")}
+            </p>
+          )}
         </article>
       ))}
 
@@ -75,7 +83,7 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
       </div>
 
       <div className="card">
-        <h3>Karnataka Platform Based Gig Workers (Social Security and Welfare) Act, 2025: quoted sections</h3>
+        <h3>Karnataka Platform Based Gig Workers (Social Security and Welfare) Act, 2025: {t.quoted}</h3>
         {draft.citations.map((c) => (
           <blockquote key={c.id}>
             <strong>{c.id.replace(/^KA-(\d+)-(\d+)$/, "Section $1($2)")}</strong> {c.text}
@@ -85,7 +93,7 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
 
       {evidenceSms.length > 0 && (
         <div className="card">
-          <h3>Evidence: bank SMS</h3>
+          <h3>{t.smsEvidence}</h3>
           {evidenceSms.map((c) => (
             <p key={c.sourceId} className="evidence">
               <strong>{c.sourceId}</strong> {smsText[c.sourceId] ?? c.rawText}
