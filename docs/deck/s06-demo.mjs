@@ -5,8 +5,8 @@ import { chip, label } from "./parts.mjs";
 export default function (pptx) {
   const s = frame(pptx, "Demo · Ravi's week", "One week of evidence, audited in about 30 seconds");
   const pw = 2.2;
-  const ph = 4.55;
-  const y = 1.75;
+  const ph = pw * (1307 / 738); // phone screenshots cropped to the app area (738×1307)
+  const y = 1.95;
   const phones = [
     ["shot-collect.png", "1  Collect", "Collect screen: upload, SMS box, \"Try with demo data\""],
     ["shot-confirm.png", "2  Confirm", "Confirm screen: thumbnails + editable numbers + bank credits"],
