@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { loadDemo } from "./demo-data.js";
-import { applicableChecks, runAudit } from "./agent.js";
+import { applicableChecks, runAudit, verdictWords } from "./agent.js";
 import { auditWithFallback } from "./audit-service.js";
 import type { ModelSource } from "./model.js";
 
@@ -96,6 +96,30 @@ describe("runAudit with Cline SDK Agent", () => {
         ]),
       }),
     ).rejects.toThrow(/without a docket/);
+  });
+});
+
+describe("verdict-word guard", () => {
+  it("finds verdict words in English, Kannada and Hindi", () => {
+    expect(verdictWords("This is a violation and illegal")).toEqual(["violation", "illegal"]);
+    expect(verdictWords("ಸೆಕ್ಷನ್ 15(1) ಉಲ್ಲಂಘನೆ")).toEqual(["ಉಲ್ಲಂಘನೆ"]);
+    expect(verdictWords("धारा 15(1) का उल्लंघन, गैरकानूनी")).toEqual(["उल्लंघन", "गैरकानूनी"]);
+    expect(verdictWords("ಪರಿಶೀಲನೆಗೆ ಸಾಧ್ಯವಿರುವ ಸಮಸ್ಯೆ")).toEqual([]);
+  });
+
+  it("makes the agent rewrite a letter that states a verdict", async () => {
+    const done: { tool: string; isError: boolean }[] = [];
+    const draft = await runAudit({
+      ledger: ravi,
+      source: scripted([
+        { name: "run_checks", input: { checks: ["C1", "C2", "C3", "C4", "C5", "C7"] } },
+        { name: "submit_docket", input: { ...SUBMIT.input, letter: "ಸೆಕ್ಷನ್ 15(1) ಉಲ್ಲಂಘನೆ" } },
+        SUBMIT,
+      ]),
+      onEvent: (e) => e.type === "tool-done" && done.push({ tool: e.tool, isError: e.isError }),
+    });
+    expect(done.filter((d) => d.tool === "submit_docket").map((d) => d.isError)).toEqual([true, false]);
+    expect(draft.letter).toBe("ಪತ್ರ");
   });
 });
 

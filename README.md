@@ -106,6 +106,7 @@ Screenshot and SMS text is **untrusted input**. A crafted screenshot or message 
 
 - **Worker confirms every number** before any check runs.
 - **No invented citations.** The citation guard rejects any clause not in the corpus and inserts the clause text itself.
+- **No verdicts.** If the agent's letter says "violation" / "illegal" (also ಉಲ್ಲಂಘನೆ, उल्लंघन, गैरकानूनी), `submit_docket` rejects it and the agent must rewrite it as a possible issue for review.
 - **Evidence over verdicts.** Each finding shows inputs, arithmetic and screenshot references, worded as "possible issue for review".
 - **Synthetic demo data**, stated clearly in the video.
 - **Privacy.** Screenshots and SMS are held in memory for the session and not written to disk. Screenshots **are sent to a hosted vision model** for extraction. SMS are parsed by plain code on our server and never sent to an AI model. The UI asks the worker to crop out customer names, addresses and phone numbers before upload, and to paste only bank SMS.
@@ -136,7 +137,8 @@ Try it: open the live app and tap **"Try with demo data"** (ಡೆಮೊ ಡೇ�
 - **Frontend:** React + Vite, mobile-first
 - **Server:** Express + multer (in-memory uploads)
 - **PDF:** print stylesheet + browser "Save as PDF", Noto Sans Kannada / Devanagari (Google Fonts)
-- **Tests:** vitest (38 tests: checks, SMS parser, citation guard, agent loop with a stub model, extraction, API) + a headless-Chrome end-to-end script
+- **Model:** Google Gemini (`gemini-3.1-flash-lite`) through the Cline SDK's built-in `gemini` provider, for both the agent and screenshot reading. Any other Cline SDK provider works by changing `.env`
+- **Tests:** vitest (42 tests: checks, SMS parser, citation guard, verdict-word guard, agent loop with a stub model, extraction, API) + a headless-Chrome end-to-end script + a real-model extraction check
 - **Hosting:** Render free web service; one Node process serves the API and the built web app
 
 ## Setup
@@ -148,8 +150,9 @@ git clone https://github.com/devanshjangid2005/nyaya-ledger.git
 cd nyaya-ledger
 cp .env.example .env      # set MODEL_PROVIDER, MODEL_ID, VISION_MODEL_ID, API_KEY
 npm install
-npm test                  # 38 tests; no API key needed (stub model)
+npm test                  # 42 tests; no API key needed (stub model)
 npm run smoke             # one real call to your model through the Cline SDK
+npm run extract-demo      # vision model reads the 3 demo screenshots; checks every value + the audit result
 npm run dev               # API on :8787, web on :5173
 npm run demo              # runs the pipeline on demo/data without the UI
 npm run build && npm start   # production: one server on :8787 serves API + web
