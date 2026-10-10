@@ -1,0 +1,39 @@
+{
+  "statements": [
+    {
+      "periodStart": "2026-09-29",
+      "periodEnd": "2026-10-05",
+      "payoutDate": "2026-10-06",
+      "netPayoutShown": 6105,
+      "sourceImage": "statement-1",
+      "lines": [
+        { "kind": "earning", "label": "Order earnings", "amount": 1150, "orderId": "KA-88201", "sourceImage": "statement-1" },
+        { "kind": "earning", "label": "Order earnings", "amount": 1240, "orderId": "KA-88207", "sourceImage": "statement-1" },
+        { "kind": "earning", "label": "Order earnings", "amount": 980, "orderId": "KA-88210", "sourceImage": "statement-1" },
+        { "kind": "earning", "label": "Order earnings", "amount": 1060, "orderId": "KA-88213", "sourceImage": "statement-1" },
+        { "kind": "deduction", "label": "Penalty - late delivery (order #KA-88213)", "amount": 150, "orderId": "KA-88213", "sourceImage": "statement-1" }
+      ]
+    },
+    {
+      "periodStart": "2026-09-29",
+      "periodEnd": "2026-10-05",
+      "payoutDate": "2026-10-06",
+      "netPayoutShown": 6105,
+      "sourceImage": "statement-2",
+      "lines": [
+        { "kind": "earning", "label": "Order earnings", "amount": 1060, "orderId": "KA-88213", "sourceImage": "statement-2" },
+        { "kind": "deduction", "label": "Penalty - late delivery (order #KA-88213)", "amount": 150, "orderId": "KA-88213", "sourceImage": "statement-2" },
+        { "kind": "earning", "label": "Order earnings", "amount": 870, "orderId": "KA-88219", "sourceImage": "statement-2" },
+        { "kind": "earning", "label": "Order earnings", "amount": 900, "orderId": "KA-88224", "sourceImage": "statement-2" },
+        { "kind": "incentive", "label": "Weekly incentive", "amount": 450, "sourceImage": "statement-2" },
+        { "kind": "deduction", "label": "Adjustment", "amount": 180, "sourceImage": "statement-2" },
+        { "kind": "deduction", "label": "Other", "amount": 95, "sourceImage": "statement-2" }
+      ]
+    }
+  ],
+  "payoutDates": [],
+  "blockNotices": [
+    { "noticeDate": "2026-10-03", "effectiveDate": "2026-10-03", "reasonText": "", "sourceImage": "block-notice" }
+  ],
+  "inputs": { "loggedInHours": 52, "fuelCost": 1450, "upkeepCost": 0, "language": "kn" }
+}
