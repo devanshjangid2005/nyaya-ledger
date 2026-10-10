@@ -18,11 +18,21 @@ A missing image is drawn as a grey dashed placeholder that says what to capture.
 | File | Slide | What to capture |
 |---|---|---|
 | `hero-result.png` | 1 | Result screen in **English**: summary and the first finding cards |
-| `shot-collect.png` | 5 | Collect screen in English: upload, SMS box, "Try with demo data" |
-| `shot-confirm.png` | 5 | Confirm screen in English, after fixing the misread ₹6,105 |
-| `shot-result.png` | 5 | Result screen in English: red finding cards with the arithmetic |
-| `cline-build.png` | 8 | A3 clip frame: the Cline panel, failing SMS test → fix in `sms.ts` → tests green (16:9) |
+| `shot-collect.png` | 6 | Collect screen in English: upload, SMS box, "Try with demo data" |
+| `shot-confirm.png` | 6 | Confirm screen in English, after fixing the misread ₹6,105 |
+| `shot-result.png` | 6 | Result screen in English: red finding cards with the arithmetic |
+| `cline-build.png` | 9 | A3 clip frame: the Cline panel, failing SMS test → fix in `sms.ts` → tests green (16:9) |
 
 Capture the phone shots at 412 px wide with device scale 2 (Chrome DevTools device mode, or `npm run e2e`, which saves Kannada versions in `demo/e2e/`). Capture them at feature freeze, so they match the UI the judges will see.
 
-The QR code on slide 10 is generated from the live URL at build time. The architecture on slide 6 is made of editable shapes, so it can be changed in PowerPoint. If you edit the `.pptx` by hand, re-running the build overwrites those edits, so make content changes in the `s*.mjs` files instead.
+The QR code on slide 11 is generated from the live URL at build time. The architecture on slide 7 is made of editable shapes, so it can be changed in PowerPoint. If you edit the `.pptx` by hand, re-running the build overwrites those edits, so make content changes in the `s*.mjs` files instead.
+
+## Slides
+
+Slide numbers come from the order in `build.mjs`. To add a slide, create `sNN-name.mjs`, call `frame()` (or `newSlide()` for a custom layout), add it to `build.mjs` and raise `TOTAL` in `lib.mjs`. The build stops if the count doesn't match.
+
+The testimonial on slide 3 (`s03-voice.mjs`) reads its Q&A pairs from the `QA` array at the top of the file. Each pair has the words as spoken and an English translation, and up to about 4 pairs fit.
+
+## Cline logo
+
+`brand/cline-wordmark.png` is drawn top right on every slide by `newSlide()` in `lib.mjs`. It is the official wordmark from the Cline repo (`assets/branding/logos/cline-wordmark-black.svg`), rendered to a transparent PNG and trimmed. It is used unchanged to show that the project was built with Cline.

@@ -7,7 +7,33 @@ export const HERE = dirname(fileURLToPath(import.meta.url));
 export const SHOTS = join(HERE, "shots");
 export const LIVE = "https://nyaya-ledger.onrender.com";
 export const REPO = "https://github.com/devanshjangid2005/nyaya-ledger";
-export const TOTAL = 10;
+export const TOTAL = 11;
+
+// Official Cline wordmark (github.com/cline/cline assets/branding/logos/cline-wordmark-black.svg),
+// rendered to a transparent PNG and trimmed to the ink.
+const LOGO = join(HERE, "brand", "cline-wordmark.png");
+const LOGO_RATIO = 1000 / 215;
+
+let slideNo = 0;
+/** Number of slides created so far (build.mjs checks it equals TOTAL). */
+export const slideCount = () => slideNo;
+/** Every slide must be created through this, so numbering and the logo stay consistent. */
+export function newSlide(pptx) {
+  slideNo += 1;
+  const s = pptx.addSlide();
+  s.background = { color: C.white };
+  logo(s);
+  return { s, n: slideNo };
+}
+
+/** "Built with [Cline]" in the top-right corner, aligned with the kicker line. */
+function logo(s) {
+  const h = 0.26;
+  const w = h * LOGO_RATIO;
+  const x = W - M - w;
+  s.addImage({ path: LOGO, x, y: 0.44, w, h, altText: "Cline logo" });
+  s.addText("Built with", { x: x - 1.0, y: 0.44, w: 0.9, h, fontFace: F.body, fontSize: 9, color: C.muted, align: "right", valign: "middle", margin: 0 });
+}
 
 // Colours from web/src/styles.css, so the deck matches the app.
 export const C = {
@@ -38,10 +64,9 @@ export const NO_LINE = { color: C.white, width: 0, transparency: 100 };
 /** Placeholders that still have no screenshot, reported after the build. */
 export const missing = [];
 
-/** Standard content slide: kicker, title, footer. */
-export function frame(pptx, n, kicker, title) {
-  const s = pptx.addSlide();
-  s.background = { color: C.white };
+/** Standard content slide: kicker, title, logo, footer. Numbered in build order. */
+export function frame(pptx, kicker, title) {
+  const { s, n } = newSlide(pptx);
   s.addText(`${String(n).padStart(2, "0")}   ${kicker.toUpperCase()}`, {
     x: M, y: 0.42, w: CW, h: 0.3, fontFace: F.head, fontSize: 11, color: C.brand, charSpacing: 2, margin: 0,
   });

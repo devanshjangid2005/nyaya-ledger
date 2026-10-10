@@ -1,8 +1,8 @@
-// Slide 9: challenges and how we solved them.
+// Slide 10: challenges and how we solved them.
 import { C, F, M, CW, frame } from "./lib.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 9, "Challenges", "What could go wrong, and what we built for it");
+  const s = frame(pptx, "Challenges", "What could go wrong, and what we built for it");
   const rows = [
     ["Vision misreads a number", "The worker confirms every value before any check runs"],
     ["Bank SMS formats vary", "Test-first parser; unknown formats are skipped with a reason, credits can be added by hand"],

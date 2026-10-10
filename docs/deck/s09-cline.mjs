@@ -1,9 +1,9 @@
-// Slide 8: how Cline was used, in the build and inside the product.
+// Slide 9: how Cline was used, in the build and inside the product.
 import { C, F, M, CW, frame, shot } from "./lib.mjs";
 import { label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 8, "How Cline was used", "Cline built it. The Cline SDK runs inside it.");
+  const s = frame(pptx, "How Cline was used", "Cline built it. The Cline SDK runs inside it.");
   const colW = (CW - 0.5) / 2;
   const L = M;
   const R = M + colW + 0.5;

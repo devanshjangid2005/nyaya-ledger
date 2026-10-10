@@ -1,9 +1,9 @@
-// Slide 5: demo, Ravi's week. Three phone screenshot slots + the findings.
+// Slide 6: demo, Ravi's week. Three phone screenshot slots + the findings.
 import { C, F, M, W, frame, shot } from "./lib.mjs";
 import { chip, label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 5, "Demo · Ravi's week", "One week of evidence, audited in about 30 seconds");
+  const s = frame(pptx, "Demo · Ravi's week", "One week of evidence, audited in about 30 seconds");
   const pw = 2.2;
   const ph = 4.55;
   const y = 1.75;

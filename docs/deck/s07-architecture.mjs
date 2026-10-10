@@ -1,9 +1,9 @@
-// Slide 6: architecture (editable boxes, mirrors the README mermaid diagram).
+// Slide 7: architecture (editable boxes, mirrors the README mermaid diagram).
 import { C, F, M, W, frame } from "./lib.mjs";
 import { arrow, box, chip, label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 6, "Architecture", "AI reads and writes. Code decides the numbers.");
+  const s = frame(pptx, "Architecture", "AI reads and writes. Code decides the numbers.");
   const R1 = 1.75; // row 1 top
   const R2 = 3.95; // row 2 top
   const RX = 9.9; // right column x
