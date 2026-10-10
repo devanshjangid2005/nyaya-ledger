@@ -17,7 +17,7 @@ Shared files (`README.md`, `package.json`, `shared/schema.ts`): tell the other p
 | A2 Deploy | ✅ Done. `npm run e2e -- https://nyaya-ledger.onrender.com` passes ("Cline SDK agent"); live screenshot upload reads all 3 demo images correctly |
 | A4 Legal re-check | ✅ Done. Case pending, no stay; timelines in the README |
 | A5 README | 🟡 Live URL added; Cline screenshots still to add |
-| A3 Cline clip | ⬜ To do |
+| A3 Cline clip | ⬜ To do. **Exact prompt and steps in `docs/a3-cline-clip.md`** (3 real SMS formats that fail today; don't fix them before recording) |
 | B1-B5 | ⬜ To do. **B2 can start now on the live URL** |
 
 ## Rules
