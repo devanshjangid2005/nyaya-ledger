@@ -3,7 +3,7 @@ import { C, F, M, CW, frame } from "./lib.mjs";
 import { label, stat } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 2, "The problem", "Paid, penalised and blocked by systems they can't inspect");
+  const s = frame(pptx, "The problem", "Paid, penalised and blocked by systems they can't inspect");
   const cw = (CW - 0.6) / 3;
   const stats = [
     { value: "7.7M → 23.5M", caption: "gig workers in India, 2020-21 → projected 2029-30 (NITI Aayog)" },

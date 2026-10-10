@@ -1,9 +1,9 @@
-// Slide 3: why now (the Act + IPGRS).
+// Slide 4: why now (the Act + IPGRS).
 import { C, F, M, W, NO_LINE, frame } from "./lib.mjs";
 import { chip, label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 3, "Why now", "The rights and the filing channel exist. The evidence doesn't.");
+  const s = frame(pptx, "Why Karnataka first", "The rights and the filing channel exist. The evidence doesn't.");
   label(s, "Karnataka Platform Based Gig Workers Act, 2025", M, 1.75, 7);
   const rows = [
     ["s.15(1)", "Reasons for every deduction, stated in the invoice; pay as per contract"],
@@ -49,6 +49,6 @@ export default function (pptx) {
     },
   );
   s.addNotes(
-    "Karnataka now has a law that speaks to exactly these problems: reasons for every deduction, weekly pay, 14 days' written notice before deactivation, and a right to ask how the algorithm works. Since May 2026 workers can file grievances through the state's IPGRS portal. What is missing is the evidence in a form a committee can act on. That is the gap we fill.",
+    "Karnataka now has a law that speaks to exactly these problems: reasons for every deduction, weekly pay, 14 days' written notice before deactivation, and a right to ask how the algorithm works. Since May 2026 workers can file grievances through the state's IPGRS portal, which makes Karnataka the best place to prove the idea. Other states are moving the same way: Rajasthan, Telangana and Bihar have gig-worker laws, and the central Code on Social Security covers gig workers. In every state, what is missing is the evidence in a form a committee can act on. That is the gap we fill.",
   );
 }

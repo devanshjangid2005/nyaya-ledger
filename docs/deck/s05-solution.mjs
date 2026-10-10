@@ -1,9 +1,9 @@
-// Slide 4: the solution (six-step flow).
+// Slide 5: the solution (six-step flow).
 import { C, F, M, CW, frame } from "./lib.mjs";
 import { arrow, label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 4, "The solution", "From a pile of screenshots to a docket a committee can act on");
+  const s = frame(pptx, "The solution", "From a pile of screenshots to a docket a committee can act on");
   s.addText("Upload payout screenshots, paste bank SMS, add hours and fuel cost. Nyaya-Ledger does the rest:", {
     x: M, y: 1.6, w: CW, h: 0.35, fontFace: F.body, fontSize: 13, color: C.muted, margin: 0,
   });

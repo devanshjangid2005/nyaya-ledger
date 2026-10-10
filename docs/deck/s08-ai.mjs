@@ -1,9 +1,9 @@
-// Slide 7: AI models and tools.
+// Slide 8: AI models and tools.
 import { C, F, M, CW, frame } from "./lib.mjs";
 import { label } from "./parts.mjs";
 
 export default function (pptx) {
-  const s = frame(pptx, 7, "AI models and tools", "AI where language is hard. Code where numbers must be right.");
+  const s = frame(pptx, "AI models and tools", "AI where language is hard. Code where numbers must be right.");
   const colW = (CW - 0.5) / 2;
   const L = M;
   const R = M + colW + 0.5;

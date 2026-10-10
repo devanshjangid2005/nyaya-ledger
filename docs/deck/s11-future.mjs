@@ -1,15 +1,15 @@
-// Slide 10: limitations, future scope, try it (QR).
+// Slide 11: limitations, future scope, try it (QR).
 import { C, F, M, W, LIVE, REPO, frame } from "./lib.mjs";
 import { bullets, label } from "./parts.mjs";
 
 export default function (pptx, qrPath) {
-  const s = frame(pptx, 10, "Limits · Future · Try it", "Karnataka today. Every state with a gig-worker law next.");
+  const s = frame(pptx, "Limits · Future · Try it", "Karnataka today. Every state with a gig-worker law next.");
   const c1 = M;
   const c2 = 4.55;
   const c3 = 9.2;
   label(s, "Limitations", c1, 1.75, 3.6, C.muted);
   const lim = [
-    "Karnataka only",
+    "One state's law so far: Karnataka",
     "Accuracy depends on screenshot quality",
     "Can't see platform-side data: incentive rules, welfare-fee deposits",
     "Not legal advice; the Act's validity is pending in the High Court",
@@ -48,6 +48,6 @@ export default function (pptx, qrPath) {
     { x: c3 + 0.15, y: 5.0, w: qw - 0.3, h: 1.45, fontFace: F.body, align: "center", valign: "top", margin: 0, paraSpaceAfter: 3 },
   );
   s.addNotes(
-    "Our limits: Karnataka only, accuracy depends on screenshot quality, and we cannot see platform-side data. It is not legal advice, and the Act is still before the High Court. Next, we want to support other states' gig laws, voice input, an Android companion that reads bank SMS directly, and a union dashboard of anonymised findings. Please scan the code and try it on your phone: tap 'Try with demo data'. Thank you.",
+    "Our limits: today it covers one state's law, Karnataka's. Accuracy depends on screenshot quality, and we cannot see platform-side data. It is not legal advice, and the Act is still before the High Court. Our goal is every gig worker in India. The checks are plain code and the law is a data file, so the next step is Rajasthan, Telangana, Bihar and the central Code on Social Security, each mostly a new law file and a new language. After that: voice input, an Android companion that reads bank SMS directly, and a union dashboard of anonymised findings. Please scan the code and try it on your phone: tap 'Try with demo data'. Thank you.",
   );
 }
