@@ -31,8 +31,8 @@ export function Collect({ t, lang, setLang, ai, onDone }: Props) {
 
   async function read() {
     setError("");
-    if (files.length === 0 && !smsText.trim()) return setError("Add at least one screenshot or paste SMS.");
-    if (!(Number(hours) > 0)) return setError("Enter your logged-in hours.");
+    if (files.length === 0 && !smsText.trim()) return setError(t.errNothing);
+    if (!(Number(hours) > 0)) return setError(t.errHours);
     setBusy(true);
     try {
       const [ex, sms] = await Promise.all([
@@ -82,8 +82,12 @@ export function Collect({ t, lang, setLang, ai, onDone }: Props) {
       <label className="field">
         {t.screenshots}
         <input type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []).slice(0, 8))} />
-        {files.length > 0 && <small>{files.length} selected</small>}
-        {ai === false && <small className="warn">AI reading is off on this server. You will type the values.</small>}
+        {files.length > 0 && (
+          <small>
+            {files.length} {t.selected}
+          </small>
+        )}
+        {ai === false && <small className="warn">{t.aiOff}</small>}
       </label>
 
       <label className="field">

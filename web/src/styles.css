@@ -37,7 +37,8 @@ button, .button { font: inherit; display: block; width: 100%; padding: 13px; bor
 button:disabled { opacity: 0.55; }
 .primary { background: var(--brand); color: #fff; font-weight: 700; }
 .secondary { background: #fff; color: var(--brand); border: 1px solid var(--brand); }
-.link { background: none; color: var(--brand); padding: 6px 0; width: auto; margin: 0; display: inline; }
+/* Text-style buttons ("+ line", "Copy"): at least 44x44 px so they are easy to tap on a phone. */
+.link { background: none; color: var(--brand); padding: 10px 6px; width: auto; margin: 0; display: inline-block; min-height: 44px; min-width: 44px; }
 
 .note { color: var(--muted); font-size: 0.9rem; }
 .error { color: var(--issue); background: var(--issue-bg); padding: 10px; border-radius: 8px; }
@@ -50,15 +51,22 @@ button:disabled { opacity: 0.55; }
 .card-head > div { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .card-title { display: flex; justify-content: space-between; align-items: baseline; }
 .thumb { width: 72px; border-radius: 6px; border: 1px solid var(--line); flex: none; }
-.lines { width: 100%; border-collapse: collapse; margin-top: 8px; }
-.lines td { padding: 3px 2px; }
-.lines td:first-child { width: 29%; }
+/* Each line: kind + amount on top, the full-width label below, so long labels are never cut off. */
+.lines, .lines tbody { display: block; width: 100%; margin-top: 8px; }
+.lines tr { display: grid; grid-template-columns: 1fr 100px; grid-template-areas: "kind amt" "label label"; gap: 4px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.lines td { padding: 0; min-width: 0; }
+.lines td:nth-child(1) { grid-area: kind; }
+.lines td:nth-child(2) { grid-area: label; }
+.lines td:nth-child(3) { grid-area: amt; }
 .lines select { padding-right: 2px; }
-.lines tr.deduction input { color: var(--issue); }
-.amt { text-align: right; max-width: 90px; }
+.lines textarea { resize: none; field-sizing: content; min-height: 0; overflow-wrap: anywhere; }
+.lines tr.deduction input, .lines tr.deduction textarea { color: var(--issue); }
+.amt { text-align: right; max-width: 100px; }
 .credit { display: grid; grid-template-columns: auto 1fr 90px; gap: 6px; align-items: center; margin-top: 8px; }
+.credit input[type="checkbox"] { width: 40px; height: 40px; padding: 0; margin: 0; accent-color: var(--brand); }
 .credit small { grid-column: 2 / 4; color: var(--muted); margin-top: -4px; }
 details { margin-top: 8px; font-size: 0.9rem; }
+summary { padding: 10px 0; min-height: 44px; cursor: pointer; }
 
 .steps { padding-left: 20px; }
 .steps li { margin: 6px 0; }

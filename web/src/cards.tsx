@@ -20,7 +20,7 @@ export function StatementCard({ t, s, thumb, onChange }: { t: Strings; s: Statem
             <input aria-label="period end" value={s.periodEnd} onChange={(e) => onChange({ ...s, periodEnd: e.target.value })} placeholder="YYYY-MM-DD" />
           </div>
           <label className="inline">
-            Net payout ₹
+            {t.netPayout}
             <input aria-label="net payout" inputMode="decimal" value={String(s.netPayoutShown)} onChange={(e) => onChange({ ...s, netPayoutShown: num(e.target.value) })} />
           </label>
         </div>
@@ -31,13 +31,14 @@ export function StatementCard({ t, s, thumb, onChange }: { t: Strings; s: Statem
             <tr key={k} className={l.kind}>
               <td>
                 <select value={l.kind} onChange={(e) => line(k, { kind: e.target.value as Line["kind"] })}>
-                  <option value="earning">+ pay</option>
-                  <option value="incentive">+ bonus</option>
-                  <option value="deduction">− cut</option>
+                  <option value="earning">{t.kindEarning}</option>
+                  <option value="incentive">{t.kindIncentive}</option>
+                  <option value="deduction">{t.kindDeduction}</option>
                 </select>
               </td>
               <td>
-                <input aria-label="label" value={l.label} onChange={(e) => line(k, { label: e.target.value })} />
+                {/* textarea so long labels wrap instead of being cut off; newlines are not allowed */}
+                <textarea aria-label="label" rows={1} value={l.label} onChange={(e) => line(k, { label: e.target.value.replace(/\s*\n\s*/g, " ") })} />
               </td>
               <td>
                 <input aria-label="amount" className="amt" inputMode="decimal" value={String(l.amount)} onChange={(e) => line(k, { amount: Math.abs(num(e.target.value)) })} />
@@ -47,7 +48,7 @@ export function StatementCard({ t, s, thumb, onChange }: { t: Strings; s: Statem
         </tbody>
       </table>
       <button className="link" onClick={() => onChange({ ...s, lines: [...s.lines, { kind: "deduction", label: "", amount: 0, sourceImage: s.sourceImage }] })}>
-        + line
+        {t.addLine}
       </button>
     </div>
   );
@@ -64,7 +65,7 @@ export function NoticeCard({ t, n, thumb, onChange }: { t: Strings; n: Notice; t
             <input aria-label="notice date" value={n.noticeDate} onChange={(e) => onChange({ ...n, noticeDate: e.target.value })} placeholder="YYYY-MM-DD" />
             <input aria-label="effective date" value={n.effectiveDate} onChange={(e) => onChange({ ...n, effectiveDate: e.target.value })} placeholder="YYYY-MM-DD" />
           </div>
-          <input aria-label="reason" value={n.reasonText ?? ""} onChange={(e) => onChange({ ...n, reasonText: e.target.value })} placeholder="Reason given (empty if none)" />
+          <input aria-label="reason" value={n.reasonText ?? ""} onChange={(e) => onChange({ ...n, reasonText: e.target.value })} placeholder={t.reasonPlaceholder} />
         </div>
       </div>
     </div>
