@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { DocketDraft, Ledger } from "./api";
 import type { Strings } from "./i18n";
+import type { Content } from "./content";
 
 const IPGRS_URL = "https://ipgrs.karnataka.gov.in/";
 
@@ -26,26 +27,54 @@ function CopyBtn({ t, text }: { t: Strings; text: string }) {
  * print dialog (Android Chrome: Share/Print → Save as PDF), so Kannada renders with system fonts
  * and the server needs no headless browser.
  */
-export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; draft: DocketDraft; ledger: Ledger; smsText: Record<string, string>; onRestart: () => void }) {
+const section = (id: string) => id.replace(/^KA-(\d+)-(\d+)$/, "Section $1($2)");
+
+export function Result({ t, c, draft, ledger, smsText, onRestart }: { t: Strings; c: Content; draft: DocketDraft; ledger: Ledger; smsText: Record<string, string>; onRestart: () => void }) {
   const label = { possible_issue: t.possible, ok: t.ok, info: t.info, needs_input: "?" } as const;
   const period = ledger.statements[0] ? `${ledger.statements[0].periodStart} → ${ledger.statements[0].periodEnd}` : "";
-  const evidenceSms = ledger.bankCredits.filter((c) => draft.findings.some((f) => f.evidence.includes(c.sourceId)));
+  const evidenceSms = ledger.bankCredits.filter((cr) => draft.findings.some((f) => f.evidence.includes(cr.sourceId)));
+  const count = (s: string) => draft.findings.filter((f) => f.status === s).length;
+  const today = new Date().toLocaleDateString("en-IN");
 
   return (
     <section className="docket">
       <header className="print-only">
         <h1>Nyaya-Ledger · Grievance evidence docket</h1>
         <p>
-          Period: {period} · Generated: {new Date().toLocaleDateString("en-IN")}
+          Period: {period} · Generated: {today}
         </p>
       </header>
+
+      <div className="docket-head no-print">
+        <h2>{c.docketTitle}</h2>
+        <p>
+          {period && <>{period} · </>}
+          {c.generated}: {today}
+        </p>
+      </div>
 
       <p className="disclaimer">{t.disclaimer}</p>
       {draft.generatedBy === "fallback" && <p className="note">{t.noAi}</p>}
 
+      <div className="summary-box">
+        <div className="issue">
+          <b>{count("possible_issue")}</b>
+          <small>{c.sumIssues}</small>
+        </div>
+        <div className="okk">
+          <b>{count("ok")}</b>
+          <small>{c.sumOk}</small>
+        </div>
+        <div>
+          <b>{count("info")}</b>
+          <small>{c.sumInfo}</small>
+        </div>
+      </div>
+
       <h2>{t.results}</h2>
       <p>{draft.summary}</p>
 
+      <h3 style={{ marginTop: 18 }}>{c.findingsTitle}</h3>
       {draft.findings.map((f, i) => (
         <article key={i} className={`finding ${f.status}`}>
           <div className="finding-head">
@@ -60,7 +89,7 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
           )}
           {f.clauseIds.length > 0 && (
             <p className="evidence">
-              {t.act}: {f.clauseIds.join(", ")}
+              {t.act}: {f.clauseIds.map(section).join(", ")}
             </p>
           )}
         </article>
@@ -84,9 +113,9 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
 
       <div className="card">
         <h3>Karnataka Platform Based Gig Workers (Social Security and Welfare) Act, 2025: {t.quoted}</h3>
-        {draft.citations.map((c) => (
-          <blockquote key={c.id}>
-            <strong>{c.id.replace(/^KA-(\d+)-(\d+)$/, "Section $1($2)")}</strong> {c.text}
+        {draft.citations.map((cit) => (
+          <blockquote key={cit.id}>
+            <strong>{section(cit.id)}</strong> {cit.text}
           </blockquote>
         ))}
       </div>
@@ -94,9 +123,9 @@ export function Result({ t, draft, ledger, smsText, onRestart }: { t: Strings; d
       {evidenceSms.length > 0 && (
         <div className="card">
           <h3>{t.smsEvidence}</h3>
-          {evidenceSms.map((c) => (
-            <p key={c.sourceId} className="evidence">
-              <strong>{c.sourceId}</strong> {smsText[c.sourceId] ?? c.rawText}
+          {evidenceSms.map((cr) => (
+            <p key={cr.sourceId} className="evidence">
+              <strong>{cr.sourceId}</strong> {smsText[cr.sourceId] ?? cr.rawText}
             </p>
           ))}
         </div>

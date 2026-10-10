@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api, type Extracted, type Lang, type Ledger, type SmsResult } from "./api";
 import type { Strings } from "./i18n";
+import type { Content } from "./content";
 
 export interface Collected {
   extracted: Extracted[];
@@ -12,13 +13,25 @@ export interface Collected {
 
 interface Props {
   t: Strings;
+  c: Content;
   lang: Lang;
-  setLang: (l: Lang) => void;
   ai: boolean | null;
   onDone: (c: Collected) => void;
 }
 
-export function Collect({ t, lang, setLang, ai, onDone }: Props) {
+/** Ravi's synthetic week: pre-extracted statements + notice, SMS parsed by the server. Used by Landing and Collect. */
+export async function loadDemo(lang: Lang): Promise<Collected> {
+  const d = await api.demo();
+  const sms = await api.sms(d.smsText, d.platform);
+  const extracted: Extracted[] = [
+    ...d.ledger.statements.map((s) => ({ id: s.sourceImage, status: "ok" as const, type: "statement" as const, data: s })),
+    ...d.ledger.blockNotices.map((n) => ({ id: n.sourceImage, status: "ok" as const, type: "block_notice" as const, data: n })),
+  ];
+  const thumbs = Object.fromEntries(["statement-1", "statement-2", "block-notice"].map((id) => [id, `/demo/${id}.png`]));
+  return { extracted, thumbs, sms, platform: d.platform, inputs: { ...d.ledger.inputs, language: lang } };
+}
+
+export function Collect({ t, c, lang, ai, onDone }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [smsText, setSmsText] = useState("");
   const [platform, setPlatform] = useState("");
@@ -52,15 +65,7 @@ export function Collect({ t, lang, setLang, ai, onDone }: Props) {
     setBusy(true);
     setError("");
     try {
-      const d = await api.demo();
-      const sms = await api.sms(d.smsText, d.platform);
-      // Demo screenshots are pre-extracted (synthetic); shown as images in the Confirm step.
-      const extracted: Extracted[] = [
-        ...d.ledger.statements.map((s) => ({ id: s.sourceImage, status: "ok" as const, type: "statement" as const, data: s })),
-        ...d.ledger.blockNotices.map((n) => ({ id: n.sourceImage, status: "ok" as const, type: "block_notice" as const, data: n })),
-      ];
-      const thumbs = Object.fromEntries(["statement-1", "statement-2", "block-notice"].map((id) => [id, `/demo/${id}.png`]));
-      onDone({ extracted, thumbs, sms, platform: d.platform, inputs: { ...d.ledger.inputs, language: lang } });
+      onDone(await loadDemo(lang));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -70,55 +75,81 @@ export function Collect({ t, lang, setLang, ai, onDone }: Props) {
 
   return (
     <section>
-      <label className="field">
-        {t.language}
-        <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}>
-          <option value="kn">ಕನ್ನಡ</option>
-          <option value="hi">हिन्दी</option>
-          <option value="en">English</option>
-        </select>
-      </label>
+      <div className="page-head">
+        <h2>{c.collectTitle}</h2>
+        <p>{c.collectLead}</p>
+      </div>
 
-      <label className="field">
-        {t.screenshots}
-        <input type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []).slice(0, 8))} />
-        {files.length > 0 && (
+      <div className="demo-box">
+        <strong>{c.demoTitle}</strong>
+        <p>{c.demoText}</p>
+        <button className="secondary" disabled={busy} onClick={demo}>
+          {t.demoBtn}
+        </button>
+      </div>
+
+      <div className="section">
+        <div className="section-head">
+          <span className="n">1</span>
+          <h3>{c.secScreens}</h3>
+        </div>
+        <p className="hint">{c.secScreensHint}</p>
+        <label className="drop">
+          <input type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={(e) => setFiles(Array.from(e.target.files ?? []).slice(0, 8))} />
+          <span>{c.tapToAdd}</span>
           <small>
-            {files.length} {t.selected}
+            {files.length > 0 ? `${files.length} ${t.selected}` : c.upTo}
           </small>
+        </label>
+        {files.length > 0 && (
+          <div className="chips">
+            {files.map((f, i) => (
+              <span className="chip" key={i}>
+                {f.name}
+              </span>
+            ))}
+          </div>
         )}
-        {ai === false && <small className="warn">{t.aiOff}</small>}
-      </label>
+        {ai === false && <p className="warn note">{t.aiOff}</p>}
+      </div>
 
-      <label className="field">
-        {t.smsLabel}
-        <textarea rows={6} value={smsText} onChange={(e) => setSmsText(e.target.value)} placeholder="Rs.6,005.00 credited to A/c XX4821 on 06-10-26 by NEFT from …" />
-        <small>{t.smsHint}</small>
-      </label>
-
-      <label className="field">
-        {t.platform}
-        <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder="QUICKBITE" />
-      </label>
-
-      <div className="row">
+      <div className="section">
+        <div className="section-head">
+          <span className="n">2</span>
+          <h3>{c.secSms}</h3>
+        </div>
         <label className="field">
-          {t.hours}
-          <input inputMode="decimal" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="52" />
+          {t.smsLabel}
+          <textarea rows={5} value={smsText} onChange={(e) => setSmsText(e.target.value)} placeholder="Rs.6,005.00 credited to A/c XX4821 on 06-10-26 by NEFT from …" />
+          <small>{t.smsHint}</small>
         </label>
         <label className="field">
-          {t.fuel}
-          <input inputMode="decimal" value={fuel} onChange={(e) => setFuel(e.target.value)} placeholder="1450" />
+          {t.platform}
+          <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder="QUICKBITE" />
         </label>
       </div>
 
-      <p className="note">{t.privacy}</p>
+      <div className="section">
+        <div className="section-head">
+          <span className="n">3</span>
+          <h3>{c.secWeek}</h3>
+        </div>
+        <div className="row">
+          <label className="field">
+            {t.hours}
+            <input inputMode="decimal" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="52" />
+          </label>
+          <label className="field">
+            {t.fuel}
+            <input inputMode="decimal" value={fuel} onChange={(e) => setFuel(e.target.value)} placeholder="1450" />
+          </label>
+        </div>
+      </div>
+
+      <p className="note">🔒 {t.privacy}</p>
       {error && <p className="error">{error}</p>}
       <button className="primary" disabled={busy} onClick={read}>
         {busy ? t.reading : t.readBtn}
-      </button>
-      <button className="secondary" disabled={busy} onClick={demo}>
-        {t.demoBtn}
       </button>
     </section>
   );
