@@ -7,6 +7,19 @@ Two people, working in parallel with almost no shared files.
 
 Shared files (`README.md`, `package.json`, `shared/schema.ts`): tell the other person before editing.
 
+## Status (10 Oct 2026)
+
+**Live app: https://nyaya-ledger.onrender.com** (Gemini `gemini-3.1-flash-lite` through the Cline SDK)
+
+| Task | Status |
+|---|---|
+| A1 Real model | ✅ Done. Agent writes the docket; screenshot reading checked by `npm run extract-demo` |
+| A2 Deploy | ✅ Done. `npm run e2e -- https://nyaya-ledger.onrender.com` passes ("Cline SDK agent"); live screenshot upload reads all 3 demo images correctly |
+| A4 Legal re-check | ✅ Done. Case pending, no stay; timelines in the README |
+| A5 README | 🟡 Live URL added; Cline screenshots still to add |
+| A3 Cline clip | ⬜ To do. **Exact prompt and steps in `docs/a3-cline-clip.md`** (3 real SMS formats that fail today; don't fix them before recording) |
+| B1-B5 | ⬜ To do. **B2 can start now on the live URL** |
+
 ## Rules
 
 1. `main` auto-deploys to Render, so **don't push directly to `main`**. Use a branch per task (`a/real-model`, `b/ui-qa`), then open a PR, and the other person merges.

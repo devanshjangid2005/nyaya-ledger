@@ -2,6 +2,8 @@
 
 > Turn the payout screenshots and bank SMS a Karnataka gig worker already keeps into a checked, law-grounded grievance docket, ready to file on the state's grievance portal.
 
+**Live app:** https://nyaya-ledger.onrender.com (open it on a phone and tap "Try with demo data". The free server sleeps when idle, so the first load can take about a minute.)
+
 Built for the **Cline AI Builder Hackathon (Round 2)**. Cline was the coding partner for the whole build, and the **Cline SDK** (`@cline/sdk`) runs inside the product as the agent that runs the audit.
 
 ---
@@ -43,7 +45,7 @@ A worker uploads the payout-statement and notice screenshots they already keep, 
 - It is **not legal advice**. Every docket says so.
 - It does **not** check whether a platform paid the welfare fee. Under s.20(1) the fee is charged to the platform and paid to the state, which a worker's screenshots cannot show.
 - It does **not** connect to any platform. Zomato, Swiggy and similar apps offer no partner data API. Scraping a worker's login would breach platform terms and could get the very account we're protecting blocked. The DPDP Act's right of access only starts on 13 May 2027. So all inputs come from the worker's own screenshots and SMS.
-- It takes no position on the Act's validity. **The Act is under constitutional challenge in the Karnataka High Court** (IAMAI and platforms, citing conflict with the Code on Social Security, 2020). The court declined to stay it in July 2026. Every docket carries this note.
+- It takes no position on the Act's validity. **The Act is under constitutional challenge in the Karnataka High Court** (IAMAI and platforms, citing conflict with the Code on Social Security, 2020). On 3 July 2026 the court declined to stay it: it told the platforms to deposit the welfare fee with the court and the state not to take coercive steps against them, and the case is pending. Platforms remain required to set up Internal Dispute Resolution Committees. Every docket carries this note.
 
 ## The audit checks
 
@@ -199,8 +201,8 @@ render.yaml                 Render deploy blueprint
 - Karnataka only.
 - Accuracy depends on screenshot quality; the confirmation step reduces but does not remove this.
 - Cannot see platform-side data: incentive tier rules, what the platform reports to the state, or welfare-fee deposits.
-- Statutory timelines are taken from the Act; the Karnataka Rules (2025) and IPGRS practice may differ, so the docket cites the Act.
-- The Act's validity is pending before the Karnataka High Court.
+- Timelines: the Act (s.22(4)) gives the platform's committee 14 days to send a written Action Taken Report. The Karnataka Rules, 2025 count this as 14 *working* days and require a final order within 45 days. The docket quotes the Act, and the letter asks for a report "within the time set by the Act" without naming a number of days, so it is correct under both.
+- The Act's validity is pending before the Karnataka High Court (no stay; last checked October 2026). The docket notes this and takes no position.
 - Not legal advice.
 
 ## Future scope
@@ -221,6 +223,10 @@ render.yaml                 Render deploy blueprint
 - Fee collection from July 2026 and worker counts: https://www.thehindu.com/news/cities/bangalore/karnataka-gig-workers-welfare-fee-to-be-collected-from-aggregators-from-july/article70817169.ece
 - Gig grievance redressal via IPGRS (May 2026): https://www.thehindu.com/news/national/what-is-karnatakas-new-gig-worker-grievance-system-explained/article70947029.ece
 - Karnataka High Court declines stay (July 2026): https://www.medianama.com/2026/07/223-karnataka-hc-gig-workers-act-welfare-fee/
+- High Court order of 3 July 2026 (fee deposited with the court, no coercive steps): https://www.thehindu.com/news/national/karnataka/karnataka-high-court-directs-state-government-not-to-take-coercive-steps-against-aggregators-under-new-gig-workers-welfare-law/article71179459.ece
+- Platforms leave the Welfare Board; IDRC duty continues (Aug 2026): https://billsandbenches.com/news/uber-eternal-porter-exit-karnataka-gig/
+- Case still pending, Oct 2026: https://www.livemint.com/industry/karnataka-gig-worker-law-social-security-platform-companies-11791175740941.html
+- IPGRS → IDRC → Board process and Rules timelines (14 working days, 45 days): https://chambers.com/articles/digitizing-justice-grievance-redressal-for-platform-based-gig-workers-in-karnataka
 - PAIGAM (2024), *Prisoners on Wheels? Report on Working and Living Conditions of App-based Workers in India*: https://tgpwu.org/wp-content/uploads/2024/03/Report-Final-Print-1.pdf
 - NITI Aayog gig workforce estimates: https://indbiz.gov.in/indias-gig-economy-to-have-23-5-million-workers-by-2029-30-niti-aayog/
 - Cline SDK docs: https://docs.cline.bot/sdk
