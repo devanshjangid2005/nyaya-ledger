@@ -147,21 +147,30 @@ Try it: open the live app and tap **"Try with demo data"** (ಡೆಮೊ ಡೇ�
 
 Requires Node.js 22+.
 
+**Without an API key** (works from a fresh clone, no `.env` needed):
+
 ```bash
 git clone https://github.com/devanshjangid2005/nyaya-ledger.git
 cd nyaya-ledger
-cp .env.example .env      # set MODEL_PROVIDER, MODEL_ID, VISION_MODEL_ID, API_KEY
-npm install
+npm ci                    # installs the exact versions in package-lock.json
 npm test                  # 42 tests; no API key needed (stub model)
-npm run smoke             # one real call to your model through the Cline SDK
-npm run extract-demo      # vision model reads the 3 demo screenshots; checks every value + the audit result
-npm run dev               # API on :8787, web on :5173
-npm run demo              # runs the pipeline on demo/data without the UI
 npm run build && npm start   # production: one server on :8787 serves API + web
-npm run e2e -- http://localhost:8787   # full flow in headless Chrome, saves screenshots + PDF to demo/e2e/
+npm run e2e -- http://localhost:8787   # in a second terminal: full flow in headless Chrome, saves screenshots + PDF to demo/e2e/
 ```
 
-`MODEL_PROVIDER` is any Cline SDK built-in provider id (for example `anthropic`, `gemini`, `openrouter`, `openai-native`, `cline`). Without an API key the app still works: you type the screenshot values yourself and the docket comes from the template fallback.
+Without a model the app still works: you type the screenshot values yourself and the docket comes from the template fallback, labelled "generated without AI". `npm run e2e` needs Chrome or Edge installed; if it is somewhere unusual, set `CHROME_PATH` to the browser executable.
+
+**With a model:**
+
+```bash
+cp .env.example .env      # then fill in API_KEY; change MODEL_PROVIDER, MODEL_ID, VISION_MODEL_ID if needed
+npm run smoke             # one real call to your model through the Cline SDK
+npm run extract-demo      # vision model reads the 3 demo screenshots; checks every value + the audit result
+npm run demo              # runs the pipeline on demo/data without the UI
+npm run dev               # API on :8787, web on :5173
+```
+
+`MODEL_PROVIDER` is any Cline SDK built-in provider id (for example `anthropic`, `gemini`, `openrouter`, `openai-native`, `cline`). Only create `.env` once you have a key: `.env.example` already sets `MODEL_PROVIDER` and `MODEL_ID`, so a copy with an empty `API_KEY` makes the server report AI as on. Every audit then tries the model, fails because the key is missing, and falls back to the template docket.
 
 ### Deploy (Render, free)
 
