@@ -36,8 +36,8 @@ export default function (pptx) {
     { x: 0.9, y: 5.6, w: 7.4, h: 1.1, fontFace: F.body, margin: 0, valign: "top", paraSpaceAfter: 4 },
   );
   shot(pptx, s, {
-    x: 9.15, y: 1.0, w: 3.15, h: 5.9, file: "hero-result.png",
-    label: "Hero screenshot", hint: "Result screen in English: summary + first finding cards (phone, 412 px wide)",
+    x: 9.15, y: 1.0, w: 3.15, h: 5.9, file: "hero-home.png",
+    label: "Hero screenshot", hint: "Landing screen in English: headline, \"Try with demo data\" (phone, cropped to the app)",
   });
   s.addNotes(
     "Hi, we're Devansh and Debasis. Nyaya-Ledger helps gig workers in India, delivery riders and cab drivers, turn what is already on their phone, payout screenshots and bank SMS, into a checked grievance docket they can file under gig-worker law. We start in Karnataka, where the law and a grievance portal are already working, and the app is built so each new state is mostly a new law file and a new language. It is live, so you can open it on your phone right now. Cline was our coding partner for the whole build, and the Cline SDK runs inside the product as the agent that does the audit.",

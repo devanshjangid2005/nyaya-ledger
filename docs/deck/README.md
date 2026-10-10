@@ -17,13 +17,13 @@ A missing image is drawn as a grey dashed placeholder that says what to capture.
 
 | File | Slide | What to capture |
 |---|---|---|
-| `hero-result.png` | 1 | Result screen in **English**: summary and the first finding cards |
+| `hero-home.png` | 1 | Landing screen in **English**: headline and "Try with demo data" |
 | `shot-collect.png` | 6 | Collect screen in English: upload, SMS box, "Try with demo data" |
 | `shot-confirm.png` | 6 | Confirm screen in English, after fixing the misread ₹6,105 |
 | `shot-result.png` | 6 | Result screen in English: red finding cards with the arithmetic |
 | `cline-build.png` | 9 | A3 clip frame: the Cline panel, failing SMS test → fix in `sms.ts` → tests green (16:9) |
 
-Capture the phone shots at 412 px wide with device scale 2 (Chrome DevTools device mode, or `npm run e2e`, which saves Kannada versions in `demo/e2e/`). Capture them at feature freeze, so they match the UI the judges will see.
+The four phone shots in `shots/` are real-phone screenshots of the live app in English, cropped to the app area (738×1307): the phone status bar and the browser URL bar are removed. Slide 6 sizes its frames to that ratio, so if you replace them, crop to the same size or change `ph` in `s06-demo.mjs`.
 
 The QR code on slide 11 is generated from the live URL at build time. The architecture on slide 7 is made of editable shapes, so it can be changed in PowerPoint. If you edit the `.pptx` by hand, re-running the build overwrites those edits, so make content changes in the `s*.mjs` files instead.
 
